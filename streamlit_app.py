@@ -5,7 +5,7 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 # Load the pre-trained model
-model_path = "path_to_your_model.pkl"  # Modify this path to where your model is saved
+model_path = "C:\\Users\\Test\\Downloads\\compressed_rf_model.pkl"  # Update to your model's path
 rf = joblib.load(model_path)
 
 # Set up the interface
