@@ -5,8 +5,12 @@ from sklearn.ensemble import RandomForestClassifier
 import joblib
 
 # Load the pre-trained model
-model_path = "C:\\Users\\Test\\Downloads\\compressed_rf_model.pkl"  # Update to your model's path
-rf = joblib.load(model_path)
+model_path = "compressed_rf_model.pkl"  # Ensure this path matches your uploaded model file location
+
+try:
+    rf = joblib.load(model_path)
+except FileNotFoundError:
+    st.error("Model file not found. Please ensure the model is uploaded and the path is correct.")
 
 # Set up the interface
 st.title("Target Value Prediction using Random Forest Model")
