@@ -17,7 +17,7 @@ st.title("Target Value Prediction using Random Forest Model")
 st.write("Enter the features to get predictions.")
 
 # Define input fields for the selected features
-inflight_wifi_service = st.number_input("Inflight Wifi Service", min_value=0, max_value=5)  # Assuming a scale of 0 to 5
+inflight_wifi_service = st.number_input("Inflight Wifi Service", min_value=0, max_value=5)
 seat_comfort = st.number_input("Seat Comfort", min_value=0, max_value=5)
 food_and_drink = st.number_input("Food and Drink", min_value=0, max_value=5)
 inflight_entertainment = st.number_input("Inflight Entertainment", min_value=0, max_value=5)
@@ -34,12 +34,19 @@ if st.button("Get Prediction"):
         'Cleanliness': [cleanliness],
     })
 
-    # Make prediction
-    prediction = rf.predict(input_data)
+    # Display the input data for debugging
+    st.write("Input Data for Prediction:")
+    st.write(input_data)
 
-    # Display the result
-    st.write("Prediction: ", prediction[0])
+    # Make prediction
+    try:
+        prediction = rf.predict(input_data)
+        # Display the result
+        st.write("Prediction: ", prediction[0])
+    except Exception as e:
+        st.error(f"Error during prediction: {e}")
 
 # Run the application
 if __name__ == '__main__':
     st.write("Please enter the features above to get predictions.")
+
