@@ -1,61 +1,45 @@
-# استيراد المكتبات اللازمة
+# Import necessary libraries
 import streamlit as st
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.model_selection import train_test_split
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+import joblib
 
-# استيراد البيانات (تأكد من أنك تقوم بتحميل البيانات هنا)
-# final_data = pd.read_csv('path_to_your_data.csv')  # قم بإلغاء تعليق هذه السطر و تعديل المسار
-# استخدم البيانات الخاصة بك
+# Load the pre-trained model
+model_path = "path_to_your_model.pkl"  # Modify this path to where your model is saved
+rf = joblib.load(model_path)
 
-# إعداد الواجهة
-st.title("تقييم نموذج Random Forest")
-st.write("هذا التطبيق يستخدم لتقييم نموذج Random Forest على مجموعة بيانات.")
+# Set up the interface
+st.title("Target Value Prediction using Random Forest Model")
+st.write("Enter the features to get predictions.")
 
-# قم بتحميل البيانات
-uploaded_file = st.file_uploader("تحميل ملف CSV", type='csv')
+# Define input fields for features
+# Ensure these names match the column names in your data
+feature_1 = st.number_input("Feature 1")
+feature_2 = st.number_input("Feature 2")
+feature_3 = st.number_input("Feature 3")
+feature_4 = st.number_input("Feature 4")
 
-if uploaded_file is not None:
-    # قراءة البيانات
-    final_data = pd.read_csv(uploaded_file)
+# Add more features as needed
+# For example:
+# feature_n = st.number_input("Feature N")
 
-    # إسقاط الأعمدة غير الضرورية
-    features = final_data.drop(columns=['satisfaction'])
-    target = final_data['satisfaction']
+# Button to make prediction
+if st.button("Get Prediction"):
+    # Assemble the input features into a DataFrame
+    input_data = pd.DataFrame({
+        'feature_1': [feature_1],
+        'feature_2': [feature_2],
+        'feature_3': [feature_3],
+        'feature_4': [feature_4],
+        # 'feature_n': [feature_n]  # Add other features here
+    })
 
-    # تقسيم البيانات إلى تدريب واختبار
-    x_train, x_test, y_train, y_test = train_test_split(features, target, test_size=0.25, random_state=0)
+    # Make prediction
+    prediction = rf.predict(input_data)
 
-    # دالة لتقييم النموذج
-    def evaluate_model(model, x_train, x_test, y_train, y_test):
-        model.fit(x_train, y_train)
-        train_acc = round(model.score(x_train, y_train) * 100, 2)
-        test_acc = round(model.score(x_test, y_test) * 100, 2)
-        test_pred = model.predict(x_test)
-        test_con_mat = confusion_matrix(y_test, test_pred)
+    # Display the result
+    st.write("Prediction: ", prediction[0])
 
-        return train_acc, test_acc, test_pred, test_con_mat
-
-    # استخدام نموذج RandomForestClassifier
-    rf = RandomForestClassifier(n_estimators=50, random_state=0)
-
-    # تقييم النموذج
-    train_acc, test_acc, test_pred, test_con_mat = evaluate_model(rf, x_train, x_test, y_train, y_test)
-
-    # عرض النتائج
-    st.subheader("نتائج النموذج")
-    st.write(f"نسبة دقة التدريب: {train_acc}%")
-    st.write(f"نسبة دقة الاختبار: {test_acc}%")
-    
-    st.subheader("مصفوفة الارتباك")
-    st.write(test_con_mat)
-
-    # طباعة تقرير التصنيف
-    st.subheader("تقرير التصنيف")
-    report = classification_report(y_test, test_pred, output_dict=True)
-    st.dataframe(report)
-
-# تنفيذ التطبيق
+# Run the application
 if __name__ == '__main__':
-    st.write("قم بتحميل البيانات أعلاه لبدء تقييم النموذج.")
+    st.write("Please enter the features above to get predictions.")
